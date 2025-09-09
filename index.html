@@ -1,0 +1,311 @@
+<!DOCTYPE html>
+
+<html lang="ko">
+<head>
+<!-- Google tag (gtag.js) -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-QBSDH79K42"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+
+  gtag('config', 'G-QBSDH79K42');
+</script>
+<meta charset="utf-8"/>
+<title>Pomodoro Timer</title>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<style>
+    body {
+      font-family: 'Malgun Gothic', sans-serif;
+      text-align: center;
+      padding: 25px;
+      background-color: #fff0f5;
+    }
+
+    select, input[type="range"] {
+      font-size: 16px;
+      margin: 10px;
+      padding: 6px 10px;
+      border-radius: 8px;
+      border: 1px solid #ccc;
+      transition: all 0.3s ease;
+      width: 80%;
+      max-width: 150px;
+    }
+
+    button {
+  width: 66%;
+      font-size: 21px;
+      font-weight: bold;
+      margin: 10px;
+      padding: 10px 16px;
+      border-radius: 16px;
+      border: 2px solid #d63384;
+      background-color: #ffc0cb;
+      color: #333;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      text-transform: uppercase;
+      width: 80%;
+      max-width: 170px;
+    }
+
+    button:hover {
+      background-color: #ffb6c1;
+    }
+
+    #countdown {
+  font-family: 'Noto Sans KR', sans-serif;
+  font-weight: 900;
+      font-size: 64px;
+      margin-bottom: 20px;
+      color: #d63384;
+    }
+
+    #clock {
+  width: 400px;
+  height: 400px;
+      width: 300px;
+      height: 300px;
+      border: 8px solid #ffb6c1;
+      border-radius: 50%;
+      position: relative;
+      margin: 20px auto;
+      background: radial-gradient(circle, #ffe4e1 60%, #ffc0cb 100%);
+      box-shadow: 0 0 20px rgba(255, 182, 193, 0.5);
+    }
+
+    #hand {
+      width: 8px;
+      height: 140px;
+      background: #d63384;
+      position: absolute;
+      top: calc(50% - 140px);
+      left: calc(50% - 4px);
+      transform-origin: bottom center;
+      transition: transform 0.5s ease;
+      clip-path: polygon(50% 0%, 100% 100%, 0% 100%);
+    }
+
+    .clock-number {
+      position: absolute;
+      font-size: 20px;
+      font-weight: bold;
+      color: #d63384;
+    }
+
+    .num12 { top: 10px; left: 50%; transform: translateX(-50%); }
+    .num3  { top: 50%; right: 10px; transform: translateY(-50%); }
+    .num6  { bottom: 10px; left: 50%; transform: translateX(-50%); }
+    .num9  { top: 50%; left: 10px; transform: translateY(-50%); }
+
+    #volumeControl {
+      width: 80%;
+      max-width: 250px;
+      box-sizing: border-box;
+    }
+
+    #volumeDisplay {
+      font-size: 12px;
+      color: #555;
+      margin-top: -10px;
+      margin-bottom: 10px;
+      text-align: center;
+    }
+
+    @media (max-width: 600px) {
+      #countdown {
+  font-family: 'Noto Sans KR', sans-serif;
+  font-weight: 900;
+        font-size: 48px;
+      }
+
+      #clock {
+  width: 400px;
+  height: 400px;
+        width: 250px;
+        height: 250px;
+      }
+
+      #hand {
+        height: 120px;
+        top: calc(50% - 120px);
+      }
+
+      button {
+  width: 66%;
+        font-size: 18px;
+        padding: 8px 12px;
+      }
+    }
+  </style>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@900&amp;display=swap" rel="stylesheet"/></head>
+<body><div style="position: fixed; top: 10px; left: 10px; display: flex; align-items: center; z-index: 1000;"><img src="UploadedImage0.jpg" style="height: 50px; margin-right: 10px;"/><span style="font-size: 20px; font-weight: bold; color: #333;">FocusNmeditation</span></div>
+<div id="countdown">00:00</div>
+<div id="clock">
+<div id="hand"></div>
+<div class="clock-number num12">12</div>
+<div class="clock-number num3">3</div>
+<div class="clock-number num6">6</div>
+<div class="clock-number num9">9</div>
+</div>
+<h1>Pomodoro Timer</h1>
+<label>Time:
+    <select id="timeSelect" onchange="resetTimer()" style="width:50%;">
+<option value="25">25M / 5M</option>
+<option value="50">50M / 10M</option>
+</select>
+</label>
+<br/>
+<label>White noise:
+    <select id="noiseSelect" onchange="resetTimer()" style="width:50%;">
+<option value="underwater-95592.mp3">Underwater</option>
+<option value="waterfall-68094.mp3">Waterfall</option>
+<option value="rain-sound-188158.mp3">Rain</option>
+<option value="desk-fan-66784.mp3">Fan</option>
+</select>
+</label>
+<br/>
+<label for="music">Meditation:</label>
+<select id="music" onchange="resetTimer()" style="width:50%;">
+<option value="pad-in-a-dream-state-calm-and-soothing-background-359420.mp3">Dreaming</option>
+<option value="uplifting-pad-texture-113842.mp3">Uplifting</option>
+</select>
+<br/>
+<button onclick="startTimer()" style="width:66%;">▶ START</button>
+<audio id="whiteNoise" loop=""></audio>
+<audio id="alarm" src="alarm.mp3"></audio>
+<audio id="meditation" loop=""></audio>
+<br/>
+<button id="pauseBtn" onclick="pauseMeditation()" style="width:66%;">⏸ PAUSE</button>
+<button onclick="stopMeditation()" style="width:66%;">⏹ STOP</button>
+<br/>
+<label for="volumeControl">Volume:</label>
+<input id="volumeControl" max="100" min="0" onchange="adjustVolume(this.value)" step="1" type="range" value="100"/>
+<div id="volumeDisplay">100%</div>
+<script>
+    let timer;
+    let clockInterval;
+    let meditationTimer;
+    let seconds = 0;
+    let totalSeconds = 0;
+    let isPaused = false;
+
+    function setClockHand(secondsLeft) {
+      const hand = document.getElementById('hand');
+      const angle = (secondsLeft / 3600) * 360;
+      hand.style.transform = `rotate(${angle}deg)`;
+    }
+
+    function startTimer() {
+      stopMeditation();
+      isPaused = false;
+      document.getElementById('pauseBtn').innerText = '⏸ PAUSE';
+
+      const minutes = parseInt(document.getElementById('timeSelect').value);
+      const restMinutes = minutes === 25 ? 5 : 10;
+      const noiseFile = document.getElementById('noiseSelect').value;
+      const musicFile = document.getElementById('music').value;
+
+      const whiteNoise = document.getElementById('whiteNoise');
+      const alarm = document.getElementById('alarm');
+      const meditation = document.getElementById('meditation');
+
+      whiteNoise.src = noiseFile;
+      whiteNoise.load();
+      whiteNoise.play();
+
+      meditation.src = musicFile;
+      meditation.loop = true;
+      meditation.load();
+      meditation.pause();
+      meditation.currentTime = 0;
+
+      adjustVolume(document.getElementById('volumeControl').value);
+
+      seconds = minutes * 60;
+      totalSeconds = seconds;
+
+      setClockHand(seconds);
+
+      clockInterval = setInterval(() => {
+        if (!isPaused) setClockHand(seconds);
+      }, 1000);
+
+      timer = setInterval(() => {
+        if (!isPaused) {
+          const min = String(Math.floor(seconds / 60)).padStart(2, '0');
+          const sec = String(seconds % 60).padStart(2, '0');
+          document.getElementById('countdown').innerText = `${min}:${sec}`;
+
+          if (seconds <= 0) {
+            clearInterval(timer);
+            clearInterval(clockInterval);
+            whiteNoise.pause();
+            alarm.play();
+            meditation.play();
+
+            meditationTimer = setTimeout(() => {
+              meditation.pause();
+              meditation.currentTime = 0;
+            }, restMinutes * 60 * 1000);
+          }
+
+          seconds--;
+        }
+      }, 1000);
+    }
+
+    function pauseMeditation() {
+      const whiteNoise = document.getElementById('whiteNoise');
+      const meditation = document.getElementById('meditation');
+      const pauseBtn = document.getElementById('pauseBtn');
+
+      isPaused = !isPaused;
+      pauseBtn.innerText = isPaused ? '▶ RESUME' : '⏸ PAUSE';
+
+      if (!isPaused) {
+        whiteNoise.play();
+        meditation.play();
+      } else {
+        whiteNoise.pause();
+        meditation.pause();
+      }
+    }
+
+    function stopMeditation() {
+      clearInterval(timer);
+      clearInterval(clockInterval);
+      clearTimeout(meditationTimer);
+      isPaused = false;
+      document.getElementById('pauseBtn').innerText = '⏸ PAUSE';
+
+      seconds = 0;
+      totalSeconds = 0;
+
+      document.getElementById('countdown').innerText = '00:00';
+      document.getElementById('hand').style.transform = 'rotate(0deg)';
+
+      document.getElementById('whiteNoise').pause();
+      document.getElementById('whiteNoise').currentTime = 0;
+
+      document.getElementById('meditation').pause();
+      document.getElementById('meditation').currentTime = 0;
+
+      document.getElementById('alarm').pause();
+      document.getElementById('alarm').currentTime = 0;
+    }
+
+    function resetTimer() {
+      stopMeditation();
+    }
+
+    function adjustVolume(value) {
+      const volume = parseFloat(value) / 100;
+      document.getElementById('whiteNoise').volume = volume;
+      document.getElementById('meditation').volume = volume;
+      document.getElementById('volumeDisplay').innerText = `${value}%`;
+    }
+  </script>
+</body>
+</html>
