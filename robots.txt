@@ -1,0 +1,5 @@
+text
+User-agent: *
+Allow: /
+
+Sitemap: https://stunning-cajeta-63b2e5.netlify.app/sitemap.xml
